@@ -1,1 +1,1 @@
-include  ':example', ':email'
+include  ':email'
