@@ -1,1 +1,1 @@
-include  ':example', ':email', ':mylibrary'
+include  ':example', ':email'
