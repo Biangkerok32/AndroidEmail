@@ -91,6 +91,7 @@ public class Email {
             transport.sendMessage(message, message.getAllRecipients());
         } catch (Exception e) {
             e.printStackTrace();
+            if(emailListener!=null)emailListener.onFail(-1,e.toString());
         } finally {
             if (transport != null) {
                 try {
