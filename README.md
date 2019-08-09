@@ -13,7 +13,6 @@ implementation 'com.github.my11712:AndroidEmail:1.0.3'
 ```
 ### 发送邮件
 #### 1、设置邮箱账户
-
 ```
 EmailAccount account = new EmailAccount.Build()
                 .setAccountType(EmailAccount.TYPE_QQ)
@@ -21,8 +20,8 @@ EmailAccount account = new EmailAccount.Build()
                 .setPassword("xnjdcbtuakqwbegb")
                 .setTimeOut(6000)
                 .build();   
-		
-#### 2、设置接收邮件地址
+```
+####  2、设置接收邮件地址
 ``` 
   List<String> addressList = new ArrayList<>();
         addressList.add("my11712@126.com");
