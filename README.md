@@ -23,14 +23,14 @@ EmailAccount account = new EmailAccount.Build()
 ```
 ####  2、设置接收邮件地址
 ``` 
-  List<String> addressList = new ArrayList<>();
-        addressList.add("my11712@126.com");
+List<String> addressList = new ArrayList<>();
+addressList.add("my11712@126.com");
 ```
 ####  3、设置抄送
 ```
  //抄送给自己
-        List<String> ccList = new ArrayList<>();
-        ccList.add("827071810@qq.com");
+List<String> ccList = new ArrayList<>();
+ccList.add("827071810@qq.com");
 ```
 ####  4、设置邮件内容
 ```
