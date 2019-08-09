@@ -17,7 +17,7 @@ implementation 'com.github.my11712:AndroidEmail:1.0.3'
 EmailAccount account = new EmailAccount.Build()
                 .setAccountType(EmailAccount.TYPE_QQ)
                 .setUserName("827071810@qq.com")
-                .setPassword("xnjdcbtuakqwbegb")
+                .setPassword("XXXXX")
                 .setTimeOut(6000)
                 .build();   
 ```
@@ -25,14 +25,12 @@ EmailAccount account = new EmailAccount.Build()
 ``` 
   List<String> addressList = new ArrayList<>();
         addressList.add("my11712@126.com");
-	 
-
+```
 ####  3、设置抄送
 ```
  //抄送给自己
         List<String> ccList = new ArrayList<>();
         ccList.add("827071810@qq.com");
-	
 ```
 ####  4、设置邮件内容
 ```
@@ -50,4 +48,4 @@ EmailAccount account = new EmailAccount.Build()
              Email.getInstance().setCopyToAddress(ccList);
      
              Email.getInstance().sendEmailAsync(emailMessage, MainActivity.this);     
-	     ```
+```
