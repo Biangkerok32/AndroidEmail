@@ -11,6 +11,8 @@ allprojects {
  
 implementation 'com.github.my11712:AndroidEmail:1.0.3'
 ```
+### MARK
+目前版本 126邮箱是使用密码登录，QQ邮箱是使用授权码登录
 ### 发送邮件
 #### 1、设置邮箱账户
 ```
