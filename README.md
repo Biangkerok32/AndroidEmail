@@ -10,7 +10,7 @@ allprojects {
 	}
  
 implementation 'com.github.my11712:AndroidEmail:1.0.3'
-
+```
 ### 发送邮件
 #### 1、设置邮箱账户
    EmailAccount account = new EmailAccount.Build()
