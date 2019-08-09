@@ -34,18 +34,17 @@ EmailAccount account = new EmailAccount.Build()
 ```
 ####  4、设置邮件内容
 ```
-  EmailMessage emailMessage = new EmailMessage();
-        //邮件标题
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd  HH:mm:ss", Locale.getDefault());
-        emailMessage.setTitle("112323标题" + simpleDateFormat.format(new Date()));
-        //邮件内容
-        emailMessage.setContent("测试内容22211111111111111");
+EmailMessage emailMessage = new EmailMessage();
+//邮件标题
+SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd  HH:mm:ss", Locale.getDefault());
+emailMessage.setTitle("112323标题" + simpleDateFormat.format(new Date()));
+//邮件内容
+emailMessage.setContent("测试内容22211111111111111");
 ```
 #### 5、发送
 ```
-       Email.getInstance().setAccount(account);
-             Email.getInstance().setToAddress(addressList);
-             Email.getInstance().setCopyToAddress(ccList);
-     
-             Email.getInstance().sendEmailAsync(emailMessage, MainActivity.this);     
+Email.getInstance().setAccount(account);
+Email.getInstance().setToAddress(addressList);
+Email.getInstance().setCopyToAddress(ccList);
+Email.getInstance().sendEmailAsync(emailMessage, MainActivity.this);     
 ```
