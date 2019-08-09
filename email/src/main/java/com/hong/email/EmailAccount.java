@@ -1,9 +1,13 @@
 package com.hong.email;
 
 
-import java.util.concurrent.TimeUnit;
 
 public class EmailAccount {
+
+    public static final int TYPE_QQ = 0;
+    public static final int TYPE_126 = 1;
+
+
     /**
      * 发送邮件的地址
      */
@@ -40,6 +44,8 @@ public class EmailAccount {
      * 超时时间
      */
     private String timeout="1000";
+    //QQ邮箱需要开启ssl，126不需要
+    private boolean ssl;
 
     public String getFrom() {
         return from;
@@ -98,6 +104,14 @@ public class EmailAccount {
         this.connectTimeOut = connectTimeOut;
     }
 
+    public boolean isSsl() {
+        return ssl;
+    }
+
+    public void setSsl(boolean ssl) {
+        this.ssl = ssl;
+    }
+
     /**
      * 初始化126邮箱参数
      * @param uerName 用户名
@@ -127,8 +141,48 @@ public class EmailAccount {
         emailAccount.setPassword(password);
         emailAccount.setHost("smtp.qq.com");
         emailAccount.setPort("465");
+        emailAccount.setSsl(true);
         emailAccount.setTimeout(timeoutMilli);
         return emailAccount;
     }
 
+
+    public static class Build{
+        EmailAccount emailAccount;
+        private int accountType;
+        public Build(){
+            emailAccount =new EmailAccount();
+        }
+        public Build setAccountType(int type){
+            accountType = type;
+            return this;
+        }
+        public Build setUserName(String userName){
+            emailAccount.setFrom(userName);
+            return this;
+        }
+        public Build setPassword(String password){
+            emailAccount.setPassword(password);
+            return this;
+        }
+        public Build setTimeOut(long timeOut){
+            emailAccount.setTimeout(String.valueOf(timeOut));
+            return this;
+        }
+
+        public EmailAccount build(){
+            if(accountType==TYPE_QQ){
+                //qq邮箱
+                emailAccount.setHost("smtp.qq.com");
+                emailAccount.setPort("465");
+                emailAccount.setSsl(true);
+            }else if(accountType == TYPE_126){
+                //网易126
+                emailAccount.setHost("smtp.126.com");
+                emailAccount.setPort("25");
+                emailAccount.setSsl(false);
+            }
+            return emailAccount;
+        }
+    }
 }

@@ -1,0 +1,9 @@
+ext {
+    minSdkVersion = 14
+    targetSdkVersion = 28
+    compileSdkVersion = 28
+}
+
+ext.deps = [
+        mail:              'com.sun.mail:android-mail:1.6.0'
+]

@@ -1,6 +1,8 @@
 package com.hong.email;
 
 
+import android.os.AsyncTask;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -16,7 +18,6 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -33,6 +34,9 @@ public class Email {
     private String TAG = getClass().getSimpleName();
 
     private static Email instance;
+    private EmailAccount account;
+    private List<String> toAddress;
+    private List<String> copyToAddress;
 
     private Email() {
 
@@ -45,6 +49,19 @@ public class Email {
             }
         }
         return instance;
+    }
+
+
+    public void setToAddress(List<String> toAddress){
+        this.toAddress = toAddress;
+    }
+
+    public void setAccount(EmailAccount account) {
+        this.account = account;
+    }
+
+    public void setCopyToAddress(List<String> copyToAddress) {
+        this.copyToAddress = copyToAddress;
     }
 
     /**
@@ -91,7 +108,7 @@ public class Email {
             transport.sendMessage(message, message.getAllRecipients());
         } catch (Exception e) {
             e.printStackTrace();
-            if(emailListener!=null)emailListener.onFail(-1,e.toString());
+            if (emailListener != null) emailListener.onFail(-1, e.toString());
         } finally {
             if (transport != null) {
                 try {
@@ -101,6 +118,11 @@ public class Email {
                 }
             }
         }
+    }
+
+    public void sendEmailAsync(EmailMessage emailMessage, EmailListener emailListener) {
+        EmailAsync emailAsync = new EmailAsync( emailMessage, emailListener);
+        emailAsync.execute();
     }
 
     private Session getEmailSession(final EmailAccount emailAccount) throws AddressException {
@@ -113,11 +135,12 @@ public class Email {
         properties.setProperty("mail.smtp.auth", "true");
         properties.setProperty("mail.smtp.connectiontimeout", emailAccount.getConnectTimeOut());
         properties.setProperty("mail.smtp.timeout", emailAccount.getTimeout());
-        properties.put("mail.smtp.starttls.enable", true);
+        if (emailAccount.isSsl()) {
+            properties.put("mail.smtp.ssl.enable", true);
+        }
         properties.put("mail.debug", true);
 
         properties.setProperty("mail.transport", "smtp");
-
         // 获取默认session对象
         return Session.getDefaultInstance(properties,
                 new Authenticator() {
@@ -175,5 +198,72 @@ public class Email {
         return fileBodyPart;
     }
 
+    private class EmailAsync extends AsyncTask<Void, Integer, Boolean> {
+
+        private EmailMessage emailMessage;
+        private EmailListener emailListener;
+
+
+
+        public EmailAsync(  EmailMessage emailMessage, EmailListener emailListener) {
+
+            this.emailMessage = emailMessage;
+            this.emailListener = emailListener;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... sessions) {
+            try {
+                Session emailSession = getEmailSession(account);
+                MimeMultipart mimeMultipart = buildContent(emailMessage.getContent(), emailMessage.getContentType(), emailMessage.getFiles());
+                MimeMessage message = new MimeMessage(emailSession);
+
+                //发送人
+                message.setFrom(new InternetAddress(account.getFrom()));
+
+                //接收
+                for (String addressStr : toAddress) {
+                    Address address = new InternetAddress(addressStr);
+                    message.addRecipient(Message.RecipientType.TO, address);
+                }
+
+                //抄送
+                if (copyToAddress != null) {
+                    for (String addressStr : copyToAddress) {
+                        Address address = new InternetAddress(addressStr);
+                        message.addRecipient(Message.RecipientType.CC, address);
+                    }
+                }
+                message.setSentDate(new Date());
+                message.setSubject(emailMessage.getTitle());
+                message.setContent(mimeMultipart);
+                message.saveChanges();
+
+                Transport transport = emailSession.getTransport();
+                transport.addTransportListener(new TransListener(emailListener));
+                transport.connect();
+                transport.sendMessage(message, message.getAllRecipients());
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (!aBoolean) {
+                emailListener.onFail(-1, "发送邮件失败");
+            }
+        }
+    }
 
 }
