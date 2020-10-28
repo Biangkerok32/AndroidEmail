@@ -45,8 +45,22 @@ emailMessage.setContent("测试内容22211111111111111");
 ```
 #### 5、发送
 ```
-Email.getInstance().setAccount(account);
-Email.getInstance().setToAddress(addressList);
-Email.getInstance().setCopyToAddress(ccList);
-Email.getInstance().sendEmailAsync(emailMessage, MainActivity.this);     
+EmailClient emailClient = new EmailClient(account);
+	    //收件人
+            emailClient.setToAddress(toAddress);
+	    //抄送者
+            emailClient.setCopyToAddress(copyAddress);
+            emailClient.sendEmail(emailMessage, new EmailListener() {
+
+                @Override
+                public void onSuccess() {
+                    Log.e(tag, "发送成功");
+                }
+
+                @Override
+                public void onFail(int type, String message) {
+                    Log.e(tag, "发送失败" + message);
+                }
+
+            });  
 ```
