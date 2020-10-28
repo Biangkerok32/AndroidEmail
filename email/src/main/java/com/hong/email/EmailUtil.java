@@ -29,7 +29,7 @@ import javax.mail.internet.MimeUtility;
 //http://www.126.com/help/mscan_06.htm 126邮箱参数设置
 //https://www.cnblogs.com/shihuc/p/5069783.html 126邮箱需要开启第三方登录
 //https://blog.csdn.net/richiezhu/article/details/79578483
-public class EmailClient {
+public class EmailUtil {
 
 
 
@@ -37,22 +37,22 @@ public class EmailClient {
     private List<String> toAddress;
     private List<String> copyToAddress;
 
-    public EmailClient(EmailAccount account) {
+    public EmailUtil(EmailAccount account) {
         this.account = account;
     }
 
 
-    public EmailClient setToAddress(List<String> toAddress) {
+    public EmailUtil setToAddress(List<String> toAddress) {
         this.toAddress = toAddress;
         return this;
     }
 
-    public EmailClient setAccount(EmailAccount account) {
+    public EmailUtil setAccount(EmailAccount account) {
         this.account = account;
         return this;
     }
 
-    public EmailClient setCopyToAddress(List<String> copyToAddress) {
+    public EmailUtil setCopyToAddress(List<String> copyToAddress) {
         this.copyToAddress = copyToAddress;
         return this;
     }

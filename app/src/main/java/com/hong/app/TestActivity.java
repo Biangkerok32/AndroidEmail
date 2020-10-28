@@ -7,7 +7,7 @@ import android.util.Log;
 import com.hong.email.EmailAccount;
 import com.hong.email.EmailListener;
 import com.hong.email.EmailMessage;
-import com.hong.email.EmailClient;
+import com.hong.email.EmailUtil;
 
 import java.util.ArrayList;
 
@@ -41,7 +41,7 @@ public class TestActivity extends AppCompatActivity {
             emailMessage.setTitle("赫尔达到");
 
 
-            EmailClient emailUtil = new EmailClient(account);
+            EmailUtil emailUtil = new EmailUtil(account);
             emailUtil.setToAddress(toAddress);
             emailUtil.setCopyToAddress(copyAddress);
             emailUtil.sendEmail(emailMessage, new EmailListener() {

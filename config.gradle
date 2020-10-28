@@ -1,9 +1,13 @@
 ext {
-    minSdkVersion = 19
-    targetSdkVersion = 28
-    compileSdkVersion = 28
+    versions=[
+            minSdkVersion:19,
+            targetSdkVersion:28,
+            compileSdkVersion:28,
+            buildToolsVersion:'28.0.3'
+    ]
+
 }
 
 ext.deps = [
-        mail:              'com.sun.mail:android-mail:1.6.0'
+        mail: 'com.sun.mail:android-mail:1.6.0'
 ]
