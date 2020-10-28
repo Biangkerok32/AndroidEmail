@@ -7,7 +7,7 @@ import android.util.Log;
 import com.hong.email.EmailAccount;
 import com.hong.email.EmailListener;
 import com.hong.email.EmailMessage;
-import com.hong.email.EmailUtil;
+import com.hong.email.EmailClient;
 
 import java.util.ArrayList;
 
@@ -30,17 +30,20 @@ public class TestActivity extends AppCompatActivity {
             EmailAccount account = EmailAccount.getEmailQQCompany("support@szykzh.com", "nXo5N6go4wBVQ7QZ", 6000L);
 
 
-            ArrayList<String> sendList = new ArrayList<>();
-            sendList.add("827071810@qq.com");
 
+            ArrayList<String> toAddress = new ArrayList<>();
+            toAddress.add("827071810@qq.com");
+
+            ArrayList<String> copyAddress = new ArrayList<>();
 
             EmailMessage emailMessage = new EmailMessage();
             emailMessage.setContent("12244");
             emailMessage.setTitle("赫尔达到");
 
 
-            EmailUtil emailUtil = new EmailUtil(account);
-            emailUtil.setToAddress(sendList);
+            EmailClient emailUtil = new EmailClient(account);
+            emailUtil.setToAddress(toAddress);
+            emailUtil.setCopyToAddress(copyAddress);
             emailUtil.sendEmail(emailMessage, new EmailListener() {
 
                 @Override
