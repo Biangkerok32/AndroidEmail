@@ -1,7 +1,7 @@
 package com.hong.email;
 
 
-import android.os.AsyncTask;
+import android.os.Looper;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -29,51 +29,42 @@ import javax.mail.internet.MimeUtility;
 //http://www.126.com/help/mscan_06.htm 126邮箱参数设置
 //https://www.cnblogs.com/shihuc/p/5069783.html 126邮箱需要开启第三方登录
 //https://blog.csdn.net/richiezhu/article/details/79578483
-public class Email {
+public class EmailUtil {
 
-    private String TAG = getClass().getSimpleName();
 
-    private static Email instance;
+
     private EmailAccount account;
     private List<String> toAddress;
     private List<String> copyToAddress;
 
-    private Email() {
-
-    }
-
-    public static Email getInstance() {
-        if (instance == null) {
-            synchronized (Email.class) {
-                instance = new Email();
-            }
-        }
-        return instance;
-    }
-
-
-    public void setToAddress(List<String> toAddress){
-        this.toAddress = toAddress;
-    }
-
-    public void setAccount(EmailAccount account) {
+    public EmailUtil(EmailAccount account) {
         this.account = account;
     }
 
-    public void setCopyToAddress(List<String> copyToAddress) {
-        this.copyToAddress = copyToAddress;
+
+    public EmailUtil setToAddress(List<String> toAddress) {
+        this.toAddress = toAddress;
+        return this;
     }
+
+    public EmailUtil setAccount(EmailAccount account) {
+        this.account = account;
+        return this;
+    }
+
+    public EmailUtil setCopyToAddress(List<String> copyToAddress) {
+        this.copyToAddress = copyToAddress;
+        return this;
+    }
+
 
     /**
      * 发送邮件
      *
-     * @param account       发送者邮箱
-     * @param toAddress     接收者的邮箱
-     * @param copyToAddress 抄送者的邮箱
      * @param emailMessage  发送的消息
      * @param emailListener 回调
      */
-    public void sendEmail(EmailAccount account, List<String> toAddress, List<String> copyToAddress, EmailMessage emailMessage, EmailListener emailListener) {
+    public void sendEmail(EmailMessage emailMessage, EmailListener emailListener) {
         Transport transport = null;
         try {
             Session emailSession = getEmailSession(account);
@@ -83,8 +74,12 @@ public class Email {
             //发送人
             message.setFrom(new InternetAddress(account.getFrom()));
 
-            //接收
+            if (toAddress.isEmpty()) {
+                emailListener.onFail(ErrorCode.ERROR_Receive_EMPTY, ErrorCode.ERROR_RECEIVE_EMPTY_MSG);
+                return;
+            }
 
+            //接收
             for (String addressStr : toAddress) {
                 Address address = new InternetAddress(addressStr);
                 message.addRecipient(Message.RecipientType.TO, address);
@@ -97,11 +92,15 @@ public class Email {
                     message.addRecipient(Message.RecipientType.CC, address);
                 }
             }
+            if (isMainThread()) {
+                emailListener.onFail(ErrorCode.ERROR_MAIN_THREAD, ErrorCode.ERROR_MAIN_THREAD_MSG);
+                return;
+            }
+
             message.setSentDate(new Date());
             message.setSubject(emailMessage.getTitle());
             message.setContent(mimeMultipart);
             message.saveChanges();
-
             transport = emailSession.getTransport();
             transport.addTransportListener(new TransListener(emailListener));
             transport.connect();
@@ -120,12 +119,13 @@ public class Email {
         }
     }
 
-    public void sendEmailAsync(EmailMessage emailMessage, EmailListener emailListener) {
-        EmailAsync emailAsync = new EmailAsync( emailMessage, emailListener);
-        emailAsync.execute();
+
+    private boolean isMainThread() {
+        return Looper.getMainLooper() == Looper.myLooper();
     }
 
-    private Session getEmailSession(final EmailAccount emailAccount) throws AddressException {
+
+    private static Session getEmailSession(final EmailAccount emailAccount) throws AddressException {
         // 获取系统属性
         Properties properties = new Properties();
         properties.put("mail.smtp.user", new InternetAddress(emailAccount.getFrom()));//登录邮件服务器的用户名
@@ -198,72 +198,5 @@ public class Email {
         return fileBodyPart;
     }
 
-    private class EmailAsync extends AsyncTask<Void, Integer, Boolean> {
-
-        private EmailMessage emailMessage;
-        private EmailListener emailListener;
-
-
-
-        public EmailAsync(  EmailMessage emailMessage, EmailListener emailListener) {
-
-            this.emailMessage = emailMessage;
-            this.emailListener = emailListener;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... sessions) {
-            try {
-                Session emailSession = getEmailSession(account);
-                MimeMultipart mimeMultipart = buildContent(emailMessage.getContent(), emailMessage.getContentType(), emailMessage.getFiles());
-                MimeMessage message = new MimeMessage(emailSession);
-
-                //发送人
-                message.setFrom(new InternetAddress(account.getFrom()));
-
-                //接收
-                for (String addressStr : toAddress) {
-                    Address address = new InternetAddress(addressStr);
-                    message.addRecipient(Message.RecipientType.TO, address);
-                }
-
-                //抄送
-                if (copyToAddress != null) {
-                    for (String addressStr : copyToAddress) {
-                        Address address = new InternetAddress(addressStr);
-                        message.addRecipient(Message.RecipientType.CC, address);
-                    }
-                }
-                message.setSentDate(new Date());
-                message.setSubject(emailMessage.getTitle());
-                message.setContent(mimeMultipart);
-                message.saveChanges();
-
-                Transport transport = emailSession.getTransport();
-                transport.addTransportListener(new TransListener(emailListener));
-                transport.connect();
-                transport.sendMessage(message, message.getAllRecipients());
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            if (!aBoolean) {
-                emailListener.onFail(-1, "发送邮件失败");
-            }
-        }
-    }
 
 }
