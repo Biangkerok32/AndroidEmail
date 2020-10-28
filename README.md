@@ -45,12 +45,12 @@ emailMessage.setContent("测试内容22211111111111111");
 ```
 #### 5、发送
 ```
-EmailClient emailUtil = new EmailClient(account);
+EmailClient emailClient = new EmailClient(account);
 	    //收件人
-            emailUtil.setToAddress(toAddress);
+            emailClient.setToAddress(toAddress);
 	    //抄送者
-            emailUtil.setCopyToAddress(copyAddress);
-            emailUtil.sendEmail(emailMessage, new EmailListener() {
+            emailClient.setCopyToAddress(copyAddress);
+            emailClient.sendEmail(emailMessage, new EmailListener() {
 
                 @Override
                 public void onSuccess() {
