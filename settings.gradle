@@ -1,1 +1,1 @@
-include  ':email', ':example'
+include  ':email', ':app'

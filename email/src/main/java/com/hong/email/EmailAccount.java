@@ -124,13 +124,13 @@ public class EmailAccount {
      * @param password 密码
      * @return
      */
-    public static EmailAccount getEmail126(String uerName, String password, String timeout) {
+    public static EmailAccount getEmail126(String uerName, String password, Long timeoutMilli) {
         EmailAccount emailAccount = new EmailAccount();
         emailAccount.setFrom(uerName);
         emailAccount.setPassword(password);
         emailAccount.setHost("smtp.126.com");
         emailAccount.setPort("25");
-        emailAccount.setTimeout(timeout);
+        emailAccount.setTimeout(Long.toString(timeoutMilli));
         return emailAccount;
     }
 
@@ -144,14 +144,14 @@ public class EmailAccount {
      * @param timeoutMilli 毫秒
      * @return
      */
-    public static EmailAccount getEmailQQ(String uerName, String password, String timeoutMilli) {
+    public static EmailAccount getEmailQQ(String uerName, String password, Long timeoutMilli) {
         EmailAccount emailAccount = new EmailAccount();
         emailAccount.setFrom(uerName);
         emailAccount.setPassword(password);
         emailAccount.setHost("smtp.qq.com");
         emailAccount.setPort("465");
         emailAccount.setSsl(true);
-        emailAccount.setTimeout(timeoutMilli);
+        emailAccount.setTimeout(Long.toString(timeoutMilli));
         return emailAccount;
     }
 
