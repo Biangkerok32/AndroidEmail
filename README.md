@@ -45,7 +45,7 @@ emailMessage.setContent("测试内容22211111111111111");
 ```
 #### 5、发送
 ```
-EmailUtil emailUtil = new EmailUtil(account);
+EmailClient emailUtil = new EmailClient(account);
 	    //收件人
             emailUtil.setToAddress(toAddress);
 	    //抄送者
