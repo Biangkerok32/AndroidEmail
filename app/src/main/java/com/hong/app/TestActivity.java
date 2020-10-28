@@ -26,34 +26,34 @@ public class TestActivity extends AppCompatActivity {
 //        account.setPassword("nXo5N6go4wBVQ7QZ");
 //        account.setSsl(true);
 //        account.setTimeout("60000");
-            Log.e("dddddd",Long.toString(6000));
-            EmailAccount account =   EmailAccount.getEmailQQCompany("support@szykzh.com","nXo5N6go4wBVQ7QZ",6000L);
+            Log.e("dddddd", Long.toString(6000));
+            EmailAccount account = EmailAccount.getEmailQQCompany("support@szykzh.com", "nXo5N6go4wBVQ7QZ", 6000L);
 
 
-        ArrayList<String> sendList = new ArrayList<>();
-        sendList.add("827071810@qq.com");
+            ArrayList<String> sendList = new ArrayList<>();
+            sendList.add("827071810@qq.com");
 
 
-        EmailMessage emailMessage = new EmailMessage();
-        emailMessage.setContent("12244");
-        emailMessage.setTitle("赫尔达到");
+            EmailMessage emailMessage = new EmailMessage();
+            emailMessage.setContent("12244");
+            emailMessage.setTitle("赫尔达到");
 
 
-        EmailUtil emailUtil = new EmailUtil(account);
-        emailUtil.setToAddress(sendList);
-        emailUtil.sendEmail(emailMessage, new EmailListener() {
+            EmailUtil emailUtil = new EmailUtil(account);
+            emailUtil.setToAddress(sendList);
+            emailUtil.sendEmail(emailMessage, new EmailListener() {
 
-            @Override
-            public void onSuccess() {
-                Log.e(tag, "发送成功");
-            }
+                @Override
+                public void onSuccess() {
+                    Log.e(tag, "发送成功");
+                }
 
-            @Override
-            public void onFail(int type, String message) {
-                Log.e(tag, "发送失败" + message);
-            }
+                @Override
+                public void onFail(int type, String message) {
+                    Log.e(tag, "发送失败" + message);
+                }
 
-        });
+            });
         }).start();
     }
 }
