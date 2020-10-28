@@ -4,8 +4,12 @@ package com.hong.email;
 public class EmailAccount {
 
     public static final int TYPE_QQ = 0;
-    public static final int TYPE_126 = 1;
 
+    public static final int TYPE_126 = 1;
+    /**
+     * qq企业邮箱
+     */
+    public static final int TYPE_QQ_COMPANY = 2;
 
     /**
      * 发送邮件的地址
@@ -159,14 +163,14 @@ public class EmailAccount {
      * @param timeoutMilli 毫秒
      * @return
      */
-    public static EmailAccount getEmailQQCompany(String uerName, String password, String timeoutMilli) {
+    public static EmailAccount getEmailQQCompany(String uerName, String password, Long timeoutMilli) {
         EmailAccount emailAccount = new EmailAccount();
         emailAccount.setFrom(uerName);
         emailAccount.setPassword(password);
         emailAccount.setHost("smtp.exmail.qq.com");
         emailAccount.setPort("465");
         emailAccount.setSsl(true);
-        emailAccount.setTimeout(timeoutMilli);
+        emailAccount.setTimeout(Long.toString(timeoutMilli));
         return emailAccount;
     }
 
@@ -209,6 +213,11 @@ public class EmailAccount {
                 emailAccount.setHost("smtp.126.com");
                 emailAccount.setPort("25");
                 emailAccount.setSsl(false);
+            }else if (accountType==TYPE_QQ_COMPANY){
+                //qq企业邮箱
+                emailAccount.setHost("smtp.exmail.qq.com");
+                emailAccount.setPort("465");
+                emailAccount.setSsl(true);
             }
             return emailAccount;
         }
